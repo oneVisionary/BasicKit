@@ -24,13 +24,13 @@
                     <p class="tool-description">Manage your daily tasks</p>
                 </div>
 
-                <div class="tool-card" onclick="navigateToTool('password-generator')">
+                <div class="tool-card" onclick="location.href='{{ url_for('password_mod.password') }}'">
                     <div class="tool-icon">🔐</div>
                     <h3 class="tool-title">Password Generator</h3>
                     <p class="tool-description">Generate secure passwords</p>
                 </div>
 
-                <div class="tool-card" onclick="navigateToTool('unit-converter')">
+                <div class="tool-card" onclick="location.href='{{ url_for('converter.converter') }}'">
                     <div class="tool-icon">📏</div>
                     <h3 class="tool-title">Unit Converter</h3>
                     <p class="tool-description">Convert between units</p>
