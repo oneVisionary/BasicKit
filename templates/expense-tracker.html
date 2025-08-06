@@ -10,7 +10,7 @@
     <div class="tool-header">
         <div class="container">
             <div class="breadcrumb">
-                <a href="index.html">🏠 Home</a> / 💰 Expense Tracker
+                <a href="{{url_for('index')}}">🏠 Home</a> / 💰 Expense Tracker
             </div>
             <h1 class="tool-title">💰 Expense Tracker</h1>
         </div>
@@ -19,7 +19,7 @@
     <main class="main">
         <div class="container">
             <div class="tool-content">
-                <button class="back-btn" onclick="goBack()">← Back to Toolkit</button>
+              <button class="back-btn" onclick="window.location.href='{{ url_for('index') }}'">← Back to Toolkit</button>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
                     <div class="input-group">
