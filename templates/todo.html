@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List - Python Basic Toolkit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css" integrity="sha512-kJlvECunwXftkPwyvHbclArO8wszgBGisiLeuDFwNM8ws+wKIw0sv1os3ClWZOcrEB2eRXULYUsm8OVRGJKwGA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">🏠 Home</a> / 📝 Todo List
+            </div>
+            <h1 class="tool-title">📝 Todo List</h1>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-content">
+          <button class="back-btn" onclick="window.location.href='{{ url_for('index') }}'">← Back to Toolkit</button>
+
+                <div class="input-group">
+                    <label for="todoInput">Add New Task</label>
+                    <input type="text" id="todoInput" placeholder="Enter your task...">
+                    <button class="btn" onclick="addTodo()">Add Task</button>
+                </div>
+
+                <div id="todoList">
+                    {% for task in tasks %}
+     <div>
+        <input type="checkbox" onchange="toggleComplete('{{task.id}}',this.checked)"{% if task.completed%}checked{%endif%}>
+<span style="text-decoration: {{'line-through' if task.completed else 'none'}};">{{task.title}}</span>
+<i class="ri-delete-bin-5-line" style="color: red; cursor: pointer;" onclick="deleteTodo('{{task.id}}')"></i> 
+
+</div>
+           
+                     {% endfor %}
+                </div>
+
+               
+            </div>
+        </div>
+    </main>
+<script>
+    const addTodoUrl = "{{ url_for('todo.add_todo') }}";
+    const updateTodoUrl = "{{ url_for('todo.update_todo') }}";
+    const deleteTodoUrl = "{{ url_for('todo.delete_todo') }}";
+</script>
+
+    <script src="static/main.js"></script>
+    <script src="static/todo.js"></script>
+</body>
+</html>

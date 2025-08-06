@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Basic Toolkit</title>
+    <link rel="stylesheet" href="static/style.css">
+    
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🐍 Python Basic Toolkit</h1>
+            <p class="subtitle">Essential tools for everyday tasks</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="grid">
+                <div class="tool-card" onclick="location.href='{{ url_for('todo.todo') }}'">
+                    <div class="tool-icon">📝</div>
+                    <h3 class="tool-title">Todo List</h3>
+                    <p class="tool-description">Manage your daily tasks</p>
+                </div>
+
+                <div class="tool-card" onclick="navigateToTool('password-generator')">
+                    <div class="tool-icon">🔐</div>
+                    <h3 class="tool-title">Password Generator</h3>
+                    <p class="tool-description">Generate secure passwords</p>
+                </div>
+
+                <div class="tool-card" onclick="navigateToTool('unit-converter')">
+                    <div class="tool-icon">📏</div>
+                    <h3 class="tool-title">Unit Converter</h3>
+                    <p class="tool-description">Convert between units</p>
+                </div>
+
+                <div class="tool-card" onclick="navigateToTool('expense-tracker')">
+                    <div class="tool-icon">💰</div>
+                    <h3 class="tool-title">Expense Tracker</h3>
+                    <p class="tool-description">Track your expenses</p>
+                </div>
+
+                <div class="tool-card" onclick="navigateToTool('calculator')">
+                    <div class="tool-icon">🔢</div>
+                    <h3 class="tool-title">Calculator</h3>
+                    <p class="tool-description">Basic calculations</p>
+                </div>
+
+                <div class="tool-card" onclick="navigateToTool('weather-app')">
+                    <div class="tool-icon">🌤️</div>
+                    <h3 class="tool-title">Weather App</h3>
+                    <p class="tool-description">Check weather information</p>
+                </div>
+
+                <div class="tool-card" onclick="navigateToTool('currency-converter')">
+                    <div class="tool-icon">💱</div>
+                    <h3 class="tool-title">Currency Converter</h3>
+                    <p class="tool-description">Convert currencies</p>
+                </div>
+
+                <div class="tool-card" onclick="navigateToTool('file-converter')">
+                    <div class="tool-icon">📄</div>
+                    <h3 class="tool-title">File Converter</h3>
+                    <p class="tool-description">Convert file formats</p>
+                </div>
+
+                <div class="tool-card" onclick="navigateToTool('news-fetcher')">
+                    <div class="tool-icon">📰</div>
+                    <h3 class="tool-title">News Fetcher</h3>
+                    <p class="tool-description">Get latest news</p>
+                </div>
+
+                <div class="tool-card" onclick="navigateToTool('dice-game')">
+                    <div class="tool-icon">🎲</div>
+                    <h3 class="tool-title">Dice Game</h3>
+                    <p class="tool-description">Roll dice and play games</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Python Basic Toolkit. Built with ❤️</p>
+        </div>
+    </footer>
+
+    <script src="static/main.js"></script>
+</body>
+</html>

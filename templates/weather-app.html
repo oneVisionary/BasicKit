@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Python Basic Toolkit</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">🏠 Home</a> / 🌤️ Weather App
+            </div>
+            <h1 class="tool-title">🌤️ Weather App</h1>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-content">
+                <button class="back-btn" onclick="goBack()">← Back to Toolkit</button>
+                
+                <div class="input-group">
+                    <label for="cityInput">Enter City Name</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="cityInput" placeholder="e.g., London, New York" style="flex: 1;">
+                        <button class="btn" onclick="getWeather()">Get Weather</button>
+                    </div>
+                </div>
+
+                <div id="weatherResult" style="display: none;">
+                    <div style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); color: white; border-radius: 16px; padding: 2rem; margin-top: 2rem;">
+                        <div style="text-align: center;">
+                            <h2 id="cityName">-</h2>
+                            <div style="font-size: 4rem; margin: 1rem 0;" id="weatherIcon">☀️</div>
+                            <div style="font-size: 3rem; font-weight: bold;" id="temperature">--°</div>
+                            <div style="font-size: 1.2rem; margin: 1rem 0;" id="description">-</div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Feels Like</div>
+                                <div style="font-size: 1.5rem; font-weight: bold;" id="feelsLike">--°</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Humidity</div>
+                                <div style="font-size: 1.5rem; font-weight: bold;" id="humidity">--%</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Wind Speed</div>
+                                <div style="font-size: 1.5rem; font-weight: bold;" id="windSpeed">-- m/s</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Pressure</div>
+                                <div style="font-size: 1.5rem; font-weight: bold;" id="pressure">-- hPa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="errorMessage" class="result" style="display: none; background: #fed7d7; border-color: #fc8181; color: #c53030;">
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1rem; background: #f7fafc; border-radius: 8px;">
+                    <h3>ℹ️ Demo Mode</h3>
+                    <p>This is a demo version. In a real application, you would need to integrate with a weather API like OpenWeatherMap. For now, it shows sample weather data for demonstration purposes.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="static/main.js"></script>
+    <script>
+        const sampleWeatherData = {
+            'london': { temp: 18, feels_like: 16, humidity: 65, wind_speed: 3.2, pressure: 1013, description: 'Partly Cloudy', icon: '⛅' },
+            'new york': { temp: 22, feels_like: 24, humidity: 58, wind_speed: 4.1, pressure: 1020, description: 'Sunny', icon: '☀️' },
+            'tokyo': { temp: 26, feels_like: 28, humidity: 72, wind_speed: 2.8, pressure: 1008, description: 'Cloudy', icon: '☁️' },
+            'paris': { temp: 20, feels_like: 19, humidity: 60, wind_speed: 3.5, pressure: 1015, description: 'Light Rain', icon: '🌦️' },
+            'sydney': { temp: 24, feels_like: 26, humidity: 55, wind_speed: 5.2, pressure: 1018, description: 'Clear Sky', icon: '🌤️' }
+        };
+
+        function getWeather() {
+            const city = document.getElementById('cityInput').value.trim().toLowerCase();
+            const errorDiv = document.getElementById('errorMessage');
+            const resultDiv = document.getElementById('weatherResult');
+
+            if (!city) {
+                errorDiv.textContent = 'Please enter a city name!';
+                errorDiv.style.display = 'block';
+                resultDiv.style.display = 'none';
+                return;
+            }
+
+            // Simulate API call delay
+            setTimeout(() => {
+                const weatherData = sampleWeatherData[city] || {
+                    temp: Math.round(Math.random() * 30 + 5),
+                    feels_like: Math.round(Math.random() * 30 + 5),
+                    humidity: Math.round(Math.random() * 40 + 40),
+                    wind_speed: (Math.random() * 10 + 1).toFixed(1),
+                    pressure: Math.round(Math.random() * 50 + 990),
+                    description: ['Sunny', 'Cloudy', 'Partly Cloudy', 'Light Rain'][Math.floor(Math.random() * 4)],
+                    icon: ['☀️', '☁️', '⛅', '🌦️'][Math.floor(Math.random() * 4)]
+                };
+
+                document.getElementById('cityName').textContent = city.charAt(0).toUpperCase() + city.slice(1);
+                document.getElementById('weatherIcon').textContent = weatherData.icon;
+                document.getElementById('temperature').textContent = `${weatherData.temp}°C`;
+                document.getElementById('description').textContent = weatherData.description;
+                document.getElementById('feelsLike').textContent = `${weatherData.feels_like}°C`;
+                document.getElementById('humidity').textContent = `${weatherData.humidity}%`;
+                document.getElementById('windSpeed').textContent = `${weatherData.wind_speed} m/s`;
+                document.getElementById('pressure').textContent = `${weatherData.pressure} hPa`;
+
+                errorDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+            }, 500);
+        }
+
+        // Allow Enter key to get weather
+        document.getElementById('cityInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                getWeather();
+            }
+        });
+    </script>
+</body>
+</html>

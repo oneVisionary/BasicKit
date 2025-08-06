@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Game - Python Basic Toolkit</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">🏠 Home</a> / 🎲 Dice Game
+            </div>
+            <h1 class="tool-title">🎲 Dice Game</h1>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-content">
+                <button class="back-btn" onclick="goBack()">← Back to Toolkit</button>
+                
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h2>Roll the Dice!</h2>
+                    <p>Choose the number of dice and see what you get!</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="diceCount">Number of Dice</label>
+                    <select id="diceCount">
+                        <option value="1">1 Die</option>
+                        <option value="2" selected>2 Dice</option>
+                        <option value="3">3 Dice</option>
+                        <option value="4">4 Dice</option>
+                        <option value="5">5 Dice</option>
+                        <option value="6">6 Dice</option>
+                    </select>
+                </div>
+
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="btn" onclick="rollDice()" style="font-size: 1.2rem; padding: 1rem 2rem;">🎲 Roll Dice!</button>
+                </div>
+
+                <div id="diceResults" style="display: none;">
+                    <div id="diceDisplay" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin: 2rem 0;">
+                        <!-- Dice will appear here -->
+                    </div>
+                    
+                    <div style="text-align: center; background: #667eea; color: white; padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+                        <h3>Results</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                            <div>
+                                <div style="font-size: 2rem; font-weight: bold;" id="totalSum">0</div>
+                                <div style="opacity: 0.9;">Total Sum</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: bold;" id="averageValue">0</div>
+                                <div style="opacity: 0.9;">Average</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: bold;" id="highestValue">0</div>
+                                <div style="opacity: 0.9;">Highest</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: bold;" id="lowestValue">0</div>
+                                <div style="opacity: 0.9;">Lowest</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="gameHistory" style="display: none; margin-top: 2rem;">
+                    <h3>Roll History</h3>
+                    <div id="historyList" style="max-height: 300px; overflow-y: auto;">
+                        <!-- History will appear here -->
+                    </div>
+                    <button class="btn btn-secondary" onclick="clearHistory()">Clear History</button>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <h3>🎮 Game Rules & Ideas</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                        <div style="background: #f7fafc; padding: 1rem; border-radius: 8px;">
+                            <h4>Yahtzee Style</h4>
+                            <p>Roll 5 dice and try to get matching numbers or sequences!</p>
+                        </div>
+                        <div style="background: #f7fafc; padding: 1rem; border-radius: 8px;">
+                            <h4>High Score Challenge</h4>
+                            <p>Try to get the highest possible sum with multiple dice!</p>
+                        </div>
+                        <div style="background: #f7fafc; padding: 1rem; border-radius: 8px;">
+                            <h4>Lucky Sevens</h4>
+                            <p>Roll 2 dice and see how often you can get a sum of 7!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="static/main.js"></script>
+    <script>
+        let rollHistory = [];
+
+        function rollDice() {
+            const diceCount = parseInt(document.getElementById('diceCount').value);
+            const diceValues = [];
+            
+            // Generate random values
+            for (let i = 0; i < diceCount; i++) {
+                diceValues.push(Math.floor(Math.random() * 6) + 1);
+            }
+            
+            displayDice(diceValues);
+            calculateStats(diceValues);
+            addToHistory(diceValues);
+            
+            document.getElementById('diceResults').style.display = 'block';
+            document.getElementById('gameHistory').style.display = 'block';
+        }
+
+        function displayDice(values) {
+            const diceDisplay = document.getElementById('diceDisplay');
+            diceDisplay.innerHTML = '';
+            
+            const diceFaces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+            
+            values.forEach((value, index) => {
+                const dieElement = document.createElement('div');
+                dieElement.static/style.cssText = `
+                    width: 80px;
+                    height: 80px;
+                    background: white;
+                    border: 3px solid #667eea;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 3rem;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                    animation: rollAnimation 0.5s ease;
+                    animation-delay: ${index * 0.1}s;
+                `;
+                
+                dieElement.textContent = diceFaces[value - 1];
+                diceDisplay.appendChild(dieElement);
+            });
+        }
+
+        function calculateStats(values) {
+            const sum = values.reduce((a, b) => a + b, 0);
+            const average = (sum / values.length).toFixed(1);
+            const highest = Math.max(...values);
+            const lowest = Math.min(...values);
+            
+            document.getElementById('totalSum').textContent = sum;
+            document.getElementById('averageValue').textContent = average;
+            document.getElementById('highestValue').textContent = highest;
+            document.getElementById('lowestValue').textContent = lowest;
+        }
+
+        function addToHistory(values) {
+            const timestamp = new Date().toLocaleTimeString();
+            rollHistory.unshift({ values, timestamp });
+            
+            // Keep only last 10 rolls
+            if (rollHistory.length > 10) {
+                rollHistory = rollHistory.slice(0, 10);
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            rollHistory.forEach((roll, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.static/style.cssText = `
+                    background: ${index % 2 === 0 ? '#f7fafc' : 'white'};
+                    padding: 0.8rem;
+                    border-radius: 6px;
+                    margin-bottom: 0.5rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                `;
+                
+                const sum = roll.values.reduce((a, b) => a + b, 0);
+                
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>Roll ${rollHistory.length - index}:</strong> 
+                        ${roll.values.join(', ')} 
+                        <span style="color: #667eea;">(Sum: ${sum})</span>
+                    </div>
+                    <small style="color: #718096;">${roll.timestamp}</small>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        function clearHistory() {
+            rollHistory = [];
+            updateHistoryDisplay();
+        }
+
+        // Add CSS animation for dice roll
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rollAnimation {
+                0% {
+                    transform: rotateX(0deg) rotateY(0deg);
+                }
+                50% {
+                    transform: rotateX(180deg) rotateY(180deg);
+                }
+                100% {
+                    transform: rotateX(360deg) rotateY(360deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

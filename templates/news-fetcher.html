@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Fetcher - Python Basic Toolkit</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">🏠 Home</a> / 📰 News Fetcher
+            </div>
+            <h1 class="tool-title">📰 News Fetcher</h1>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-content">
+                <button class="back-btn" onclick="goBack()">← Back to Toolkit</button>
+                
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; margin-bottom: 2rem;">
+                    <div class="input-group">
+                        <label for="newsCategory">News Category</label>
+                        <select id="newsCategory">
+                            <option value="general">General</option>
+                            <option value="technology">Technology</option>
+                            <option value="business">Business</option>
+                            <option value="sports">Sports</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="health">Health</option>
+                            <option value="science">Science</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: end;">
+                        <button class="btn" onclick="fetchNews()">Fetch News</button>
+                    </div>
+                </div>
+
+                <div id="loadingIndicator" style="display: none; text-align: center; padding: 2rem;">
+                    <div style="font-size: 2rem;">📰</div>
+                    <p>Fetching latest news...</p>
+                </div>
+
+                <div id="newsContainer">
+                    <!-- News articles will be displayed here -->
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1rem; background: #f7fafc; border-radius: 8px;">
+                    <h3>ℹ️ Demo Mode</h3>
+                    <p>This is a demo version with sample news articles. In a real application, you would integrate with a news API like NewsAPI, Guardian API, or similar services to fetch live news.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="static/main.js"></script>
+    <script>
+        const sampleNews = {
+            general: [
+                { title: "Global Climate Summit Reaches Historic Agreement", summary: "World leaders agree on ambitious climate targets for the next decade.", time: "2 hours ago", source: "Global News" },
+                { title: "New Archaeological Discovery Sheds Light on Ancient Civilization", summary: "Researchers uncover remarkable artifacts dating back 3,000 years.", time: "4 hours ago", source: "Science Daily" },
+                { title: "International Trade Relations Show Signs of Improvement", summary: "Diplomatic talks yield positive results for global commerce.", time: "6 hours ago", source: "Economic Times" }
+            ],
+            technology: [
+                { title: "Revolutionary AI Model Breaks Performance Records", summary: "New machine learning breakthrough promises faster and more accurate predictions.", time: "1 hour ago", source: "Tech World" },
+                { title: "Quantum Computing Reaches New Milestone", summary: "Scientists achieve unprecedented quantum coherence in laboratory conditions.", time: "3 hours ago", source: "Science Tech" },
+                { title: "Sustainable Energy Technology Shows Promise", summary: "New solar panel technology achieves 95% efficiency in testing.", time: "5 hours ago", source: "Green Tech" }
+            ],
+            business: [
+                { title: "Major Tech Companies Report Strong Quarterly Earnings", summary: "Technology sector shows resilience despite economic uncertainties.", time: "2 hours ago", source: "Business Herald" },
+                { title: "Startup Secures Record-Breaking Funding Round", summary: "AI healthcare company raises $500M in Series C funding.", time: "4 hours ago", source: "Venture Beat" },
+                { title: "Global Supply Chain Shows Signs of Recovery", summary: "Industry experts optimistic about logistics improvements.", time: "7 hours ago", source: "Trade Weekly" }
+            ],
+            sports: [
+                { title: "Championship Final Breaks Viewership Records", summary: "Millions tune in for the most watched sporting event of the year.", time: "1 hour ago", source: "Sports Central" },
+                { title: "Olympic Training Facilities Announce Upgrades", summary: "State-of-the-art equipment to support next generation of athletes.", time: "3 hours ago", source: "Olympic News" },
+                { title: "Professional League Expands to New Markets", summary: "Popular sport continues global expansion with new franchise announcements.", time: "5 hours ago", source: "League Today" }
+            ],
+            entertainment: [
+                { title: "Blockbuster Film Shatters Box Office Records", summary: "Latest superhero movie becomes highest-grossing opening weekend ever.", time: "2 hours ago", source: "Entertainment Weekly" },
+                { title: "Music Festival Announces Star-Studded Lineup", summary: "Major artists confirmed for summer's biggest music event.", time: "4 hours ago", source: "Music News" },
+                { title: "Streaming Platform Reveals Upcoming Original Series", summary: "Highly anticipated shows to premiere next month.", time: "6 hours ago", source: "Stream Watch" }
+            ],
+            health: [
+                { title: "Medical Breakthrough Offers Hope for Rare Disease", summary: "New treatment shows promising results in clinical trials.", time: "1 hour ago", source: "Medical Journal" },
+                { title: "Health App Users Report Improved Wellness Outcomes", summary: "Digital health tracking shows measurable benefits for users.", time: "3 hours ago", source: "Health Tech" },
+                { title: "Global Health Initiative Launches in Developing Countries", summary: "International cooperation aims to improve healthcare access.", time: "5 hours ago", source: "World Health" }
+            ],
+            science: [
+                { title: "Space Mission Discovers Potentially Habitable Exoplanet", summary: "Telescope data reveals Earth-like conditions on distant world.", time: "2 hours ago", source: "Space News" },
+                { title: "Marine Biology Team Identifies New Deep Sea Species", summary: "Previously unknown creatures found in unexplored ocean depths.", time: "4 hours ago", source: "Ocean Research" },
+                { title: "Physics Experiment Confirms Theoretical Predictions", summary: "Laboratory results validate decades-old scientific hypothesis.", time: "6 hours ago", source: "Physics Today" }
+            ]
+        };
+
+        function fetchNews() {
+            const category = document.getElementById('newsCategory').value;
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const newsContainer = document.getElementById('newsContainer');
+
+            // Show loading
+            loadingIndicator.style.display = 'block';
+            newsContainer.innerHTML = '';
+
+            // Simulate API call delay
+            setTimeout(() => {
+                const articles = sampleNews[category] || sampleNews.general;
+                displayNews(articles);
+                loadingIndicator.style.display = 'none';
+            }, 1000);
+        }
+
+        function displayNews(articles) {
+            const newsContainer = document.getElementById('newsContainer');
+            
+            articles.forEach(article => {
+                const newsCard = document.createElement('div');
+                newsCard.static/style.cssText = `
+                    background: white;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 12px;
+                    padding: 1.5rem;
+                    margin-bottom: 1rem;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                `;
+                
+                newsCard.innerHTML = `
+                    <h3 style="margin: 0 0 0.5rem 0; color: #2d3748; font-size: 1.3rem; line-height: 1.4;">${article.title}</h3>
+                    <p style="margin: 0 0 1rem 0; color: #4a5568; line-height: 1.6;">${article.summary}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: #718096;">
+                        <span style="font-weight: 500;">${article.source}</span>
+                        <span>${article.time}</span>
+                    </div>
+                `;
+                
+                // Add hover effect
+                newsCard.addEventListener('mouseenter', () => {
+                    newsCard.style.transform = 'translateY(-2px)';
+                    newsCard.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
+                });
+                
+                newsCard.addEventListener('mouseleave', () => {
+                    newsCard.style.transform = 'translateY(0)';
+                    newsCard.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                });
+                
+                newsContainer.appendChild(newsCard);
+            });
+        }
+
+        // Load general news on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchNews();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Converter - Python Basic Toolkit</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="tool-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">🏠 Home</a> / 📄 File Converter
+            </div>
+            <h1 class="tool-title">📄 File Converter</h1>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-content">
+                <button class="back-btn" onclick="goBack()">← Back to Toolkit</button>
+                
+                <div class="input-group">
+                    <label for="fileInput">Select File</label>
+                    <input type="file" id="fileInput" accept=".txt,.csv,.json" onchange="handleFileSelect()">
+                </div>
+
+                <div class="input-group">
+                    <label for="outputFormat">Convert To</label>
+                    <select id="outputFormat">
+                        <option value="txt">Plain Text (.txt)</option>
+                        <option value="csv">Comma Separated Values (.csv)</option>
+                        <option value="json">JavaScript Object Notation (.json)</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="convertFile()" id="convertBtn" disabled>Convert File</button>
+
+                <div id="filePreview" style="display: none; margin-top: 2rem;">
+                    <h3>File Preview:</h3>
+                    <pre id="fileContent" style="background: #f7fafc; padding: 1rem; border-radius: 8px; overflow-x: auto; max-height: 300px;"></pre>
+                </div>
+
+                <div id="convertedOutput" style="display: none; margin-top: 2rem;">
+                    <h3>Converted Content:</h3>
+                    <pre id="convertedContent" style="background: #f0fff4; padding: 1rem; border-radius: 8px; overflow-x: auto; max-height: 300px; border: 2px solid #9ae6b4;"></pre>
+                    <button class="btn btn-secondary" onclick="downloadConverted()">Download Converted File</button>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1rem; background: #f7fafc; border-radius: 8px;">
+                    <h3>📋 Supported Conversions</h3>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li>Text files to CSV or JSON</li>
+                        <li>CSV to Text or JSON</li>
+                        <li>JSON to Text or CSV</li>
+                    </ul>
+                    <p style="color: #718096; margin: 0;">Note: This is a basic converter for demonstration. Complex files may require specialized tools.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="static/main.js"></script>
+    <script>
+        let selectedFile = null;
+        let fileContent = '';
+        let convertedData = '';
+
+        function handleFileSelect() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                selectedFile = file;
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    fileContent = e.target.result;
+                    document.getElementById('fileContent').textContent = fileContent.substring(0, 1000) + (fileContent.length > 1000 ? '...' : '');
+                    document.getElementById('filePreview').style.display = 'block';
+                    document.getElementById('convertBtn').disabled = false;
+                };
+                
+                reader.readAsText(file);
+            }
+        }
+
+        function convertFile() {
+            if (!selectedFile || !fileContent) return;
+            
+            const outputFormat = document.getElementById('outputFormat').value;
+            const fileName = selectedFile.name;
+            const fileExt = fileName.split('.').pop().toLowerCase();
+            
+            try {
+                if (fileExt === 'txt') {
+                    convertFromText(outputFormat);
+                } else if (fileExt === 'csv') {
+                    convertFromCsv(outputFormat);
+                } else if (fileExt === 'json') {
+                    convertFromJson(outputFormat);
+                }
+                
+                document.getElementById('convertedContent').textContent = convertedData;
+                document.getElementById('convertedOutput').style.display = 'block';
+            } catch (error) {
+                alert('Error converting file: ' + error.message);
+            }
+        }
+
+        function convertFromText(outputFormat) {
+            const lines = fileContent.split('\n').filter(line => line.trim());
+            
+            if (outputFormat === 'csv') {
+                // Convert each line to a CSV row with line number
+                convertedData = 'Line,Content\n' + 
+                    lines.map((line, index) => `${index + 1},"${line.replace(/"/g, '""')}"`).join('\n');
+            } else if (outputFormat === 'json') {
+                // Convert to JSON array of objects
+                const jsonData = lines.map((line, index) => ({
+                    line: index + 1,
+                    content: line
+                }));
+                convertedData = JSON.stringify(jsonData, null, 2);
+            } else {
+                convertedData = fileContent; // Keep as text
+            }
+        }
+
+        function convertFromCsv(outputFormat) {
+            const lines = fileContent.split('\n').filter(line => line.trim());
+            
+            if (outputFormat === 'txt') {
+                // Convert CSV to plain text
+                convertedData = lines.map(line => 
+                    line.split(',').map(cell => cell.replace(/^"|"$/g, '')).join(' | ')
+                ).join('\n');
+            } else if (outputFormat === 'json') {
+                // Convert CSV to JSON
+                if (lines.length < 2) throw new Error('CSV must have at least a header and one data row');
+                
+                const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+                const data = lines.slice(1).map(line => {
+                    const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+                    const obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header] = values[index] || '';
+                    });
+                    return obj;
+                });
+                convertedData = JSON.stringify(data, null, 2);
+            } else {
+                convertedData = fileContent; // Keep as CSV
+            }
+        }
+
+        function convertFromJson(outputFormat) {
+            const jsonData = JSON.parse(fileContent);
+            
+            if (outputFormat === 'txt') {
+                // Convert JSON to readable text
+                convertedData = JSON.stringify(jsonData, null, 2);
+            } else if (outputFormat === 'csv') {
+                // Convert JSON to CSV
+                if (!Array.isArray(jsonData)) throw new Error('JSON must be an array for CSV conversion');
+                if (jsonData.length === 0) throw new Error('JSON array is empty');
+                
+                const headers = Object.keys(jsonData[0]);
+                convertedData = headers.join(',') + '\n' +
+                    jsonData.map(row => 
+                        headers.map(header => `"${(row[header] || '').toString().replace(/"/g, '""')}"`).join(',')
+                    ).join('\n');
+            } else {
+                convertedData = fileContent; // Keep as JSON
+            }
+        }
+
+        function downloadConverted() {
+            const outputFormat = document.getElementById('outputFormat').value;
+            const originalName = selectedFile.name.split('.')[0];
+            const fileName = `${originalName}_converted.${outputFormat}`;
+            
+            const blob = new Blob([convertedData], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
